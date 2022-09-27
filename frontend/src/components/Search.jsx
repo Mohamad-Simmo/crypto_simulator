@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { searchCoin } from '../fetchFromApi';
+import { searchCoin } from '../utils/fetchFromApi';
 
 const Search = ({ onSearch }) => {
   const [search, setSearch] = useState('');

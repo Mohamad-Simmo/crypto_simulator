@@ -9,7 +9,21 @@ import {
   TableBody,
 } from '@mui/material';
 
+import { useNavigate } from 'react-router-dom';
+
 const CoinsContainer = ({ coins, page }) => {
+  const navigate = useNavigate();
+  const formatterCompact = Intl.NumberFormat('en', {
+    notation: 'compact',
+    currency: 'usd',
+    style: 'currency',
+  });
+  const formatter = Intl.NumberFormat('en', {
+    currency: 'usd',
+    style: 'currency',
+    maximumSignificantDigits: 6,
+  });
+
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -35,21 +49,34 @@ const CoinsContainer = ({ coins, page }) => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    backgroundColor: 'pink',
+
                     '&:hover': {
-                      backgroundColor: 'blue',
                       cursor: 'pointer',
+                      textDecoration: 'underline',
+                      backgroundColor: '#f0f0f0',
                     },
                   }}
-                  onClick={() => console.log(coin.id)}
+                  onClick={() => {
+                    navigate(`/${coin.id}`);
+                  }}
                 >
                   <Avatar src={coin.image} />
                   {coin.name} <span className="coin-symbol">{coin.symbol}</span>
                 </TableCell>
-                <TableCell>$ {coin.current_price || '-'}</TableCell>
-                <TableCell>$ {coin.total_volume || '-'}</TableCell>
-                <TableCell>{coin.price_change_24h || '-'}</TableCell>
-                <TableCell>$ {coin.market_cap || '-'}</TableCell>
+                <TableCell>
+                  {formatter.format(coin.current_price) || '-'}
+                </TableCell>
+                <TableCell>
+                  {formatterCompact.format(coin.total_volume) || '-'}
+                </TableCell>
+                <TableCell
+                  sx={{ color: coin.price_change_24h > 0 ? 'green' : 'red' }}
+                >
+                  {formatter.format(coin.price_change_24h) || '-'}
+                </TableCell>
+                <TableCell>
+                  {formatterCompact.format(coin.market_cap) || '-'}
+                </TableCell>
               </TableRow>
             );
           })}

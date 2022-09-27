@@ -1,6 +1,6 @@
 import { Container, Pagination } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { getCoins } from '../fetchFromApi';
+import { getCoins } from '../utils/fetchFromApi';
 import Spinner from './Spinner';
 import CoinsContainer from './CoinsContainer';
 import Search from './Search';
