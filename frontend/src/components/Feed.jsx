@@ -10,14 +10,24 @@ const Feed = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    setIsLoading(true);
+  const getCoinData = () => {
     getCoins(page)
       .then((data) => setCoins(data))
-      .then(() => {
-        setIsLoading(false);
-        window.scrollTo(0, 0);
-      });
+      .then(() => setIsLoading(false));
+  };
+
+  function setIntervalImmediately(func, interval) {
+    func();
+    return setInterval(func, interval);
+  }
+
+  useEffect(() => {
+    const interval = setIntervalImmediately(getCoinData, 60000);
+    window.scrollTo(0, 0);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, [page]);
 
   if (isLoading) return <Spinner />;

@@ -1,13 +1,31 @@
-import { TextField, Box, Stack, Button } from '@mui/material';
+import { TextField, Box, Stack, Button, Typography } from '@mui/material';
 import {
   INITIAL_STATE,
   formReducer,
   formActions,
 } from '../reducers/formReducer';
-import { useReducer } from 'react';
+import { useReducer, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { login, reset } from '../features/auth/authSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import Spinner from '../components/Spinner';
 
 const Login = () => {
   const [state, dispatch] = useReducer(formReducer, INITIAL_STATE);
+
+  const navigate = useNavigate();
+  const authDispatch = useDispatch();
+  const { user, isError, isLoading, isSuccess, message } = useSelector(
+    (store) => store.auth
+  );
+
+  useEffect(() => {
+    if (user || isSuccess) {
+      navigate('/');
+    }
+
+    authDispatch(reset());
+  }, [user, isSuccess, navigate, authDispatch]);
 
   const changeInput = (name, value) => {
     dispatch({
@@ -49,8 +67,20 @@ const Login = () => {
     validateForm();
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const userData = {
+      username: state.username.value,
+      password: state.password.value,
+    };
+
+    authDispatch(login(userData));
+  };
+
+  if (isLoading) return <Spinner />;
+
   return (
-    <Box component="form">
+    <Box component="form" onSubmit={handleSubmit}>
       <Stack
         margin="50px auto"
         spacing={2}
@@ -82,6 +112,11 @@ const Login = () => {
           helperText={state.password.error}
           type="password"
         />
+        {isError && (
+          <Typography variant="p" color="red" p={1}>
+            {message}
+          </Typography>
+        )}
         <Button
           variant="contained"
           type="submit"

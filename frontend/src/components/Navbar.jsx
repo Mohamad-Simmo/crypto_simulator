@@ -8,6 +8,10 @@ import {
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../features/auth/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const StyledToolbar = styled(Toolbar)({
   display: 'flex',
@@ -15,6 +19,10 @@ const StyledToolbar = styled(Toolbar)({
 });
 
 const Navbar = () => {
+  const { user } = useSelector((store) => store.auth);
+  const authDispatch = useDispatch();
+  const navigate = useNavigate();
+
   return (
     <AppBar
       position="static"
@@ -57,20 +65,34 @@ const Navbar = () => {
         </Typography>
 
         <Box>
-          <Button
-            component={Link}
-            to="/login"
-            sx={{ my: 2, mx: 1, color: 'white' }}
-          >
-            Login
-          </Button>
-          <Button
-            component={Link}
-            to="/register"
-            sx={{ my: 2, mx: 1, color: 'white' }}
-          >
-            Register
-          </Button>
+          {user ? (
+            <Button
+              onClick={() => {
+                authDispatch(logout());
+                navigate('/');
+              }}
+              sx={{ my: 2, mx: 1, color: 'white' }}
+            >
+              Logout
+            </Button>
+          ) : (
+            <>
+              <Button
+                component={Link}
+                to="/login"
+                sx={{ my: 2, mx: 1, color: 'white' }}
+              >
+                Login
+              </Button>
+              <Button
+                component={Link}
+                to="/register"
+                sx={{ my: 2, mx: 1, color: 'white' }}
+              >
+                Register
+              </Button>
+            </>
+          )}
         </Box>
       </StyledToolbar>
     </AppBar>

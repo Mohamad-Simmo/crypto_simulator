@@ -1,13 +1,34 @@
 import { TextField, Box, Stack, Button } from '@mui/material';
-import { useState, useReducer } from 'react';
+import { useReducer, useEffect } from 'react';
 import {
   INITIAL_STATE,
   formReducer,
   formActions,
 } from '../reducers/formReducer';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import Spinner from '../components/Spinner';
+import { reset, register } from '../features/auth/authSlice';
 
 const Register = () => {
   const [state, dispatch] = useReducer(formReducer, INITIAL_STATE);
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (store) => store.auth
+  );
+  const authDispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isSuccess || user) {
+      navigate('/');
+    }
+    if (isError) {
+      console.log(message);
+    }
+
+    authDispatch(reset());
+  }, [isSuccess, user, isError, message, navigate, authDispatch]);
 
   const changeInput = (name, value) => {
     dispatch({
@@ -61,9 +82,17 @@ const Register = () => {
         type: formActions.PASSWORD_ERR,
       });
     } else {
-      // Register user..
+      // Register user
+      const userData = {
+        username: state.username.value,
+        password: state.username.value,
+        passwordConfirm: state.passwordConfirm.value,
+      };
+      authDispatch(register(userData));
     }
   };
+
+  if (isLoading) return <Spinner />;
 
   return (
     <Box component="form" onSubmit={handleSubmit}>

@@ -3,10 +3,12 @@ import { getCoin, getCoinChart } from '../utils/fetchFromApi';
 import { useState, useEffect } from 'react';
 import { Box, Container, Typography, Stack, Avatar } from '@mui/material';
 import CoinChart from '../components/CoinChart';
+import Spinner from '../components/Spinner';
 
 const Coin = () => {
   const { id } = useParams();
   const [coin, setCoin] = useState({});
+  const [isPageLoading, setIsPageLoading] = useState(true);
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [
@@ -18,7 +20,9 @@ const Coin = () => {
   });
 
   useEffect(() => {
-    getCoin(id).then((data) => setCoin(data));
+    getCoin(id)
+      .then((data) => setCoin(data))
+      .then(() => setIsPageLoading(false));
     getCoinChart(id, 6).then((data) => {
       setChartData({
         labels: data.prices.map((arr) => {
@@ -38,6 +42,8 @@ const Coin = () => {
       });
     });
   }, [id]);
+
+  if (isPageLoading) return <Spinner />;
 
   return (
     <Container maxWidth="md" sx={{ marginBlock: '30px' }}>
