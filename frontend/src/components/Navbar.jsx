@@ -5,13 +5,13 @@ import {
   Typography,
   Box,
   Button,
+  Paper,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 
 const StyledToolbar = styled(Toolbar)({
   display: 'flex',
@@ -23,6 +23,11 @@ const Navbar = () => {
   const authDispatch = useDispatch();
   const navigate = useNavigate();
 
+  const formatter = Intl.NumberFormat('en', {
+    currency: 'usd',
+    style: 'currency',
+    maximumSignificantDigits: 3,
+  });
   return (
     <AppBar
       position="static"
@@ -64,17 +69,32 @@ const Navbar = () => {
           Crypto Simulator
         </Typography>
 
+        {user && (
+          <Box component={Paper} p={1}>
+            <Typography>Balance: {formatter.format(user.balance)}</Typography>
+          </Box>
+        )}
+
         <Box>
           {user ? (
-            <Button
-              onClick={() => {
-                authDispatch(logout());
-                navigate('/');
-              }}
-              sx={{ my: 2, mx: 1, color: 'white' }}
-            >
-              Logout
-            </Button>
+            <>
+              <Button
+                component={Link}
+                to="/trades"
+                sx={{ my: 2, mx: 1, color: 'white' }}
+              >
+                Trades
+              </Button>
+              <Button
+                onClick={() => {
+                  authDispatch(logout());
+                  navigate('/');
+                }}
+                sx={{ my: 2, mx: 1, color: 'white' }}
+              >
+                Logout
+              </Button>
+            </>
           ) : (
             <>
               <Button

@@ -1,11 +1,14 @@
 import Navbar from '../components/Navbar';
 import { Outlet } from 'react-router-dom';
+import { Container } from '@mui/material';
 
 const Home = () => {
   return (
     <>
       <Navbar />
-      <Outlet />
+      <Container maxWidth="md" sx={{ marginBlock: '30px' }}>
+        <Outlet />
+      </Container>
     </>
   );
 };

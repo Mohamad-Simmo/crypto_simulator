@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 import authService from './authService';
 
 const user = JSON.parse(localStorage.getItem('user'));
@@ -33,6 +34,20 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
     return thunkAPI.rejectWithValue(message);
   }
 });
+
+export const updateBalance = createAsyncThunk(
+  'auth/update',
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.updateBalance(token);
+    } catch (error) {
+      const message =
+        error.response?.data?.message || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -78,6 +93,20 @@ export const authSlice = createSlice({
         state.isError = true;
         state.message = 'Invalid credentials';
         state.user = null;
+      })
+      .addCase(updateBalance.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateBalance.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user.balance = action.payload.balance;
+        localStorage.setItem('user', JSON.stringify(state.user));
+      })
+      .addCase(updateBalance.rejected, (state) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = '';
       });
   },
 });

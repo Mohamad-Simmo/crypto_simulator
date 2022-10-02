@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { getCoins } from '../utils/fetchFromApi';
 import Spinner from './Spinner';
 import CoinsContainer from './CoinsContainer';
-import Search from './Search';
 
 const Feed = () => {
   const [coins, setCoins] = useState([]);
@@ -33,7 +32,7 @@ const Feed = () => {
   if (isLoading) return <Spinner />;
 
   return (
-    <Container maxWidth="md" sx={{ marginBlock: '30px' }}>
+    <>
       <CoinsContainer coins={coins} page={page} />
       <Pagination
         page={page}
@@ -46,7 +45,7 @@ const Feed = () => {
           marginBlock: '15px',
         }}
       />
-    </Container>
+    </>
   );
 };
 export default Feed;

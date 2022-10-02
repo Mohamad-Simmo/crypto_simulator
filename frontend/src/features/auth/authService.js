@@ -26,6 +26,18 @@ const logout = () => {
   localStorage.removeItem('user');
 };
 
-const authService = { register, login, logout };
+const updateBalance = async (token) => {
+  console.log('updating');
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const { data } = await axios.get(BASE_URL + '/me', config);
+
+  return data;
+};
+
+const authService = { register, login, logout, updateBalance };
 
 export default authService;

@@ -18,7 +18,6 @@ const Login = () => {
   const { user, isError, isLoading, isSuccess, message } = useSelector(
     (store) => store.auth
   );
-
   useEffect(() => {
     if (user || isSuccess) {
       navigate('/');
