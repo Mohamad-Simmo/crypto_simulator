@@ -56,7 +56,7 @@ const Trades = () => {
   const handleOpen = (coinId, sellPrice, coinName, coinAmount) => {
     setOpen(true);
     setCoinId(coinId);
-    setSellPrice(sellPrice, sellPrice);
+    setSellPrice(sellPrice);
     setCoinName(coinName);
     setAmount(coinAmount);
   };
